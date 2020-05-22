@@ -95,6 +95,15 @@ class SortingRobot:
         # if cur is larger than cur+1, swap, next, until end
         # call it again with starting with element at arr+1
 
+    def advance(self):
+      self.move_left()
+      self.swap_item()
+      self.move_right()
+
+    def load_value(self):
+      self.swap_item()
+      self.move_right()
+
 # MUST USE RECURSIVE
     def sort(self):
         """
@@ -106,57 +115,42 @@ class SortingRobot:
           return
         
         # load intial value - this concept really messed with my mind
-        self.swap_item()
-        self.move_right()
+        self.load_value()
 
         while self.can_move_right():
           a = self.compare_item()
           if a == -1:
-            self.move_left()
+            self.advance()
+          elif a == 1:
             self.swap_item()
-            self.move_right()
-          elif a == 1: # do a real "swap"
-            self.swap_item()
-            self.move_left()
-            self.swap_item()
-            self.move_right()
+            self.advance()
           elif a == 0:
-            self.move_left() # treat as smaller
-            self.swap_item()
-            self.move_right()
+            self.advance()
           elif a == None:
-            self.swap_item()
-            self.move_right()
+            self.load_value()
           else:
-            pass
+            print("SHOULD NEVER HIT HERE")
+  
   # Python doesn't have a do...while loop, that's what I'd use
   
   # last position (is "cheat"?)
         a = self.compare_item()
         if a == -1:
-          self.move_left()
-          self.swap_item()
-          self.move_right()
+          self.advance()
           #print(a)
         elif a == 1:
           self.swap_item()
-          self.move_left()
-          self.swap_item()
-          self.move_right()
+          self.advance()
           #print(a)
         elif a == 0:
-          self.move_left()
-          self.swap_item()
-          self.move_right()
+          self.advance()
         else:
-          #self.move_left()
           print("SHOULD NEVER HIT HERE")
-# last positon
 
         while self.can_move_left():
           self.move_left()
         
-        # begin cheat
+        # begin cheat - to check when done
         copy = self._list.copy()
         copy.sort()
 
@@ -173,7 +167,7 @@ class SortingRobot:
         #end cheat
         
         if self.can_move_right():
-          #self.move_right() # start at the next element in array (cheat)
+          #self.move_right() # should start at the next element in array, can't think of a way right now
           self.sort()
 
         return
@@ -195,7 +189,7 @@ if __name__ == "__main__":
     two_item_list2 = [10,5]
     three_item_list = [3,10,5]
     
-    robot = SortingRobot(empty_list)
+    robot = SortingRobot(large_varied_list)
 
     print(robot._list)
     robot.sort()
