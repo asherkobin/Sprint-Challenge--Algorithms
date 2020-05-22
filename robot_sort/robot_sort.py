@@ -91,26 +91,36 @@ class SortingRobot:
         """
         return self._light == "ON"
 
+        # if cur is larger than cur+1, swap, next, until end
+        # call it again with starting with element at arr+1
+
 # MUST USE RECURSIVE
     def sort(self):
         """
         Sort the robot's list.
         """
+        # Light is on means value is not None
         # Fill this out
-        while True:
-          if self.light_is_on() is False:
+        while self.can_move_right():
+          # load a value into _item
+          # if self.light_is_on() is False:
+          #   self.move_right()
+          #   self.swap_item()
+          #   self.move_left()
+          a = self.compare_item()
+          if a == None: # load a value
+            self.swap_item()
+            self.move_right()
+          elif a == -1:
             self.move_right()
             self.swap_item()
             self.move_left()
-          a = self.compare_item()
-          if a == 1:
-            self.move_right()
+          else:
             self.swap_item()
-            self.set_light_off()
-          elif a == -1:
-            self.set_light_on()
-            self.swap_item()
-            self.sort()
+          
+        if self.can_move_right():
+          self.move_right()
+          self.sort()
 
         return
 
