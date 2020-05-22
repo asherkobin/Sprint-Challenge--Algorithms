@@ -49,10 +49,9 @@ class SortingRobot:
         else:
             return False
 
-    def swap_item(self):
+    def swap_item(self): # Bubble Sort
         """
-        The robot swaps its currently held item with the list item in front
-        of it.
+        The robot swaps its currently held item with the list item in front of it.
         This will increment the time counter by 1.
         """
         self._time += 1
@@ -92,12 +91,28 @@ class SortingRobot:
         """
         return self._light == "ON"
 
+# MUST USE RECURSIVE
     def sort(self):
         """
         Sort the robot's list.
         """
         # Fill this out
-        pass
+        while True:
+          if self.light_is_on() is False:
+            self.move_right()
+            self.swap_item()
+            self.move_left()
+          a = self.compare_item()
+          if a == 1:
+            self.move_right()
+            self.swap_item()
+            self.set_light_off()
+          elif a == -1:
+            self.set_light_on()
+            self.swap_item()
+            self.sort()
+
+        return
 
 
 if __name__ == "__main__":
