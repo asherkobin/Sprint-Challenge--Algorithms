@@ -100,10 +100,12 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        # Light is on means value is not None
-        # Fill this out
+        # edge cases: empty array, one element, two element
+
+        if not self.can_move_left() and not self.can_move_right():
+          return
         
-        # load intial value
+        # load intial value - this concept really messed with my mind
         self.swap_item()
         self.move_right()
 
@@ -127,8 +129,9 @@ class SortingRobot:
             self.move_right()
           else:
             pass
+  # Python doesn't have a do...while loop, that's what I'd use
   
-  # last position
+  # last position (is "cheat"?)
         a = self.compare_item()
         if a == -1:
           self.move_left()
@@ -186,8 +189,13 @@ if __name__ == "__main__":
     test_list = [_ for _ in range(10)]
     random.shuffle(test_list)
     dupe_list = [32, 12, 15, 32, 1, 2]
+    empty_list = []
+    one_item_list = [4]
+    two_item_list1 = [1,5]
+    two_item_list2 = [10,5]
+    three_item_list = [3,10,5]
     
-    robot = SortingRobot(large_varied_list)
+    robot = SortingRobot(empty_list)
 
     print(robot._list)
     robot.sort()
