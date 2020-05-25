@@ -8,6 +8,8 @@ class SortingRobot:
         self._position = 0      # The list position the robot is at
         self._light = "OFF"     # The state of the robot's light
         self._time = 0          # A time counter (stretch)
+        self.debugonly_actual_num_swaps = 0 # debug purposes only
+        self.debugonly_actual_num_comps = 0 # debug purposes only
 
     def can_move_right(self):
         """
@@ -59,6 +61,7 @@ class SortingRobot:
         self._item, self._list[self._position] = self._list[self._position], self._item
 
     def compare_item(self):
+        self.debugonly_actual_num_comps += 1
         """
         Compare the held item with the item in front of the robot:
         If the held item's value is greater, return 1.
@@ -107,6 +110,7 @@ class SortingRobot:
     # end when sub-array empty
     
     def sort(self):
+      self.set_light_off()
       """
       Sort the robot's list.
       """
@@ -119,55 +123,42 @@ class SortingRobot:
       self.load_value()
 
       while self.can_move_right():
-        a = self.compare_item()
-        if a == -1:
+        if self.compare_item() == -1:
           self.advance()
-        elif a == 1:
+        elif self.compare_item() == 1:
           self.swap_item()
           self.advance()
-        elif a == 0:
+          self.set_light_on()
+          self.debugonly_actual_num_swaps += 1
+        elif self.compare_item() == 0:
           self.advance()
-        elif a == None:
+        elif self.compare_item() == None:
           self.load_value()
         else:
-          print("SHOULD NEVER HIT HERE")
+          print("SHOULD NEVER GET HERE")
 
       # Python doesn't have a do...while loop, that's what I'd use
+      # instead of directly calling the loop one final time
       
-      # process last position (is "cheat"?)
-      a = self.compare_item()
-      if a == -1:
+      if self.compare_item() == -1:
         self.advance()
-      elif a == 1:
+      elif self.compare_item() == 1:
         self.swap_item()
         self.advance()
-      elif a == 0:
+        self.set_light_on()
+      elif self.compare_item() == 0:
         self.advance()
       else:
-        print("SHOULD NEVER HIT HERE")
+        print("SHOULD NEVER GET HERE")
+
+      if not self.light_is_on():
+        return
 
       # rewind the position
       while self.can_move_left():
         self.move_left()
       
-      # *** begin cheat - to check when done
-      copy = self._list.copy()
-      copy.sort()
-
-      same = False
-      for i in range(len(copy)):
-        if copy[i] == self._list[i]:
-          same = True
-        else:
-          same = False
-          break
-
-      if same:
-        return
-      # *** end cheat
-      
       if self.can_move_right():
-        #self.move_right() # should start at the next element in array, can't think of a way right now
         self.sort()
 
       return
@@ -180,7 +171,9 @@ if __name__ == "__main__":
     l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
     large_varied_list = [1, -38, -95, 4, 23, -73, -65, -36, 85, 2, 58, -26, -55, 96, 55, -76, 64, 45, 69, 36, 69, 47, 29, -47, 13, 89, -57, -88, -87, 54, 60, 56, -98, -78, 59, 93, -41, -74, 73, -35, -23, -79, -35, 46, -18, -18, 37, -64, 14, -57, -2, 15, -85, 45, -73, -2, 79, -87, -100, 21, -51, 22, 26, -59, 81, 59, -24, 24, -81, 43, 61, 52, 38, -88, -95, 87, -57, -37, -65, -47, -3, 21, -77, 98, 25, 1, -36, 39, 78, 47, -35, -40, -69, -81, 11, -47, 21, 25, -53, -31]
     small_varied_list = [1, -38, -95, 4, 23, -73, -65, -36, 85, 2, 58, -26, -55, 96, 55, -76]
-    test_list = [_ for _ in range(10)]
+    test_list = [_ for _ in range(100)]
+    test_list_order = [_ for _ in range(100)]
+    test_list_rev = [_ for _ in range(100, 0, -1)]
     random.shuffle(test_list)
     dupe_list = [32, 12, 15, 32, 1, 2]
     empty_list = []
@@ -189,9 +182,16 @@ if __name__ == "__main__":
     two_item_list2 = [10,5]
     three_item_list = [3,10,5]
     
-    robot = SortingRobot(large_varied_list)
+    robot = SortingRobot(test_list_order)
 
     print(robot._list)
+    print("\nSORTING....\n")
     robot.sort()
-    print("**************")
     print(robot._list)
+    print("\nElements (n): " + str(len(robot._list)))
+    print("Theoritical Time Complexity O(n^2): " + str(len(robot._list) * len(robot._list)))
+    print("Approximate Time Complexity 6*n^2: " + str(6 * len(robot._list) * len(robot._list)))
+    print("Actual Time: " + str(robot._time))
+    print("Approximation Error: " + str(6 * len(robot._list) * len(robot._list) - robot._time))
+    print("Swaps: " + str(robot.debugonly_actual_num_swaps))
+    print("Comps: " + str(robot.debugonly_actual_num_comps))
