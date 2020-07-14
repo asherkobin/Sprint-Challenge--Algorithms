@@ -4,8 +4,36 @@
 
 Give an analysis of the running time of each snippet of
 pseudocode with respect to the input size n of each of the following:
-
+a = k, b = n^3, f(a) = a + b^2
 ```python
+n = 2
+
+a = 0
+2 < 8
+a = 4
+
+a = 4
+4 < 8
+a = 16
+
+a = 16
+16 < 16 + 8
+a = 24
+
+n = 3
+
+a = 0
+3 < 27
+a = 9
+
+a = 9
+9 < ~800
+a = 800
+
+.....
+
+
+
 a)  a = 0
     while (a < n * n * n):
       a = a + n * n
